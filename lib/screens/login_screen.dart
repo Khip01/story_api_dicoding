@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
 
-  Future<void> submitLogin(BuildContext context) async {
+  Future<void> _submitLogin(BuildContext context) async {
     AuthRepository authRepository = AuthRepository();
 
     try {
@@ -54,18 +54,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> storeToken(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
   }
 
   @override
   Widget build(BuildContext context) {
+    final Size deviceSize = MediaQuery.sizeOf(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Login Screen')),
       body: Container(
         padding: const EdgeInsets.all(32),
-        width: MediaQuery.sizeOf(context).width,
-        height: MediaQuery.sizeOf(context).height,
+        width: deviceSize.width,
+        height: deviceSize.height,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               isLoading = true;
                             });
-                            await submitLogin(context).then((_) {
+                            await _submitLogin(context).then((_) {
                               setState(() {
                                 isLoading = false;
                               });
