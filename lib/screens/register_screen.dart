@@ -19,7 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool isLoading = false;
 
-  Future<void> submitRegister(BuildContext context) async {
+  Future<void> _submitRegister(BuildContext context) async {
     AuthRepository authRepository = AuthRepository();
 
     try {
@@ -99,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     setState(() {
                       isLoading = true;
                     });
-                    await submitRegister(context).then((_) {
+                    await _submitRegister(context).then((_) {
                       setState(() {
                         isLoading = false;
                       });
