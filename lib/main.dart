@@ -43,8 +43,13 @@ class MyApp extends StatelessWidget {
     redirect: (context, state) async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('token');
+      final authRoute = ["/register", "/login"];
+      final isAuthRoute = authRoute.contains(state.matchedLocation);
 
-      return (token == null) ? state.namedLocation('login') : null;
+      if (token == null && !isAuthRoute) return state.namedLocation('login');
+      if (token != null && isAuthRoute) return state.namedLocation('home');
+
+      return null;
     },
   );
 
