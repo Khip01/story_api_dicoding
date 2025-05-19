@@ -5,6 +5,7 @@ import 'package:story_api_dicoding/screens/add_new_story_screen.dart';
 import 'package:story_api_dicoding/screens/home_screen.dart';
 import 'package:story_api_dicoding/screens/login_screen.dart';
 import 'package:story_api_dicoding/screens/register_screen.dart';
+import 'package:story_api_dicoding/utils/custom_scroll_behavior.dart';
 
 void main() {
   runApp(MyApp());
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      scrollBehavior: CustomScrollBehavior(),
       title: 'Flutter WRI - Story API Dicoding',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
