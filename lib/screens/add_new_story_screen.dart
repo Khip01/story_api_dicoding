@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,7 +55,9 @@ class _AddNewStoryState extends State<AddNewStory> {
       if (token == null) {
         if (context.mounted) _logout(context);
       }
-      ApiResponse apiResponse = await StoryRepository(token: token!).postNewStory(
+      ApiResponse apiResponse = await StoryRepository(
+        token: token!,
+      ).postNewStory(
         description: _descriptionController.text,
         photoFile: imageFile,
       );
@@ -116,10 +120,12 @@ class _AddNewStoryState extends State<AddNewStory> {
                 ),
                 width: deviceSize.width,
                 height: deviceSize.width - (32 * 2),
-                child:
-                    _imageFile == null
-                        ? Center(child: Text("No Image Uploaded"))
-                        : Image.memory(_imageFile!.bytes!, fit: BoxFit.cover),
+                child: _buildIimagePreview(_imageFile),
+                    // _imageFile == null
+                    //     ? Center(child: Text("No Image Uploaded"))
+                    //     : (kIsWeb)
+                    //     ? Image.memory(_imageFile!.bytes!, fit: BoxFit.cover)
+                    //     : Image.file(File(_imageFile!.path!)),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -145,5 +151,21 @@ class _AddNewStoryState extends State<AddNewStory> {
         ),
       ),
     );
+  }
+
+  Widget _buildIimagePreview(PlatformFile? file){
+    if (file == null) {
+      return const Center(child: Text("No Image Uploaded"));
+    }
+
+    if (kIsWeb && file.bytes != null) {
+      return Image.memory(file.bytes!, fit: BoxFit.cover);
+    }
+
+    if (!kIsWeb && file.path != null) {
+      return Image.file(File(file.path!), fit: BoxFit.cover);
+    }
+
+    return const Center(child: Text("Failed to load image"));
   }
 }

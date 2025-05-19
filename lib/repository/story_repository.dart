@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:story_api_dicoding/model/api_response.dart';
 import 'package:story_api_dicoding/model/story.dart';
 import 'package:story_api_dicoding/values/strings.dart';
@@ -60,17 +61,17 @@ class StoryRepository {
       // final MultipartFile? photo =
       //     photoFile != null ? MultipartFile.fromBytes(photoFile.bytes!) : null;
 
-      final MultipartFile? photo =
-          photoFile != null
-              ? MultipartFile.fromBytes(
-                photoFile.bytes!,
-                filename: photoFile.name,
-                // contentType: DioMediaType(
-                //   "image",
-                //   photoFile.extension ?? "jpeg",
-                // ),
-              )
-              : null;
+      final MultipartFile? photo = await _photoMultipartHandler(photoFile);
+          // photoFile != null
+          //     ? MultipartFile.fromBytes(
+          //       photoFile.bytes!,
+          //       filename: photoFile.name,
+          //       // contentType: DioMediaType(
+          //       //   "image",
+          //       //   photoFile.extension ?? "jpeg",
+          //       // ),
+          //     )
+          //     : null;
 
       // final FormData formData = FormData.fromMap({
       //   'description': description,
@@ -113,5 +114,25 @@ class StoryRepository {
           throw 'Unknown Error ${e.response?.data}';
       }
     }
+  }
+
+  Future<MultipartFile?> _photoMultipartHandler(PlatformFile? photoFile) async {
+    if (photoFile == null) return null;
+
+    if (kIsWeb && photoFile.bytes != null) {
+      return MultipartFile.fromBytes(
+        photoFile.bytes!,
+        filename: photoFile.name
+      );
+    }
+
+    if (!kIsWeb && photoFile.path != null) {
+      return await MultipartFile.fromFile(
+        photoFile.path!,
+        filename: photoFile.name
+      );
+    }
+
+    return null;
   }
 }
